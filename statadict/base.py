@@ -109,13 +109,13 @@ class StataDictParser:
     _COLUMN_PATTERN = r'^\s+_column'
     _LINE_PATTERN = r'^\s+_column\((\d+)\)\s+(\S+)\s+(\S+)\s+(\S+)\s*(".*")?'
 
-    def parse(self, file) -> StataDict:
+    def parse(self, file, encoding) -> StataDict:
         column_numbers = deque()
         types = deque()
         names = deque()
         formats = deque()
         comments = deque()
-        with open(file, "r") as dct_file:
+        with open(file, "r", encoding=encoding) as dct_file:
             for line in dct_file:
                 if re.search(self._COLUMN_PATTERN, line):
                     line_values = re.findall(self._LINE_PATTERN, line)
@@ -136,7 +136,7 @@ class StataDictParser:
         )
 
 
-def parse_stata_dict(file: str) -> StataDict:
+def parse_stata_dict(file: str, encoding: str = "utf-8") -> StataDict:
     """
     Parses Stata dictionary file and returns object containing column data as attributes.
 
@@ -148,4 +148,4 @@ def parse_stata_dict(file: str) -> StataDict:
     :rtype: statadict.base.StataDict
     """
     stata_dict_parser = StataDictParser()
-    return stata_dict_parser.parse(file)
+    return stata_dict_parser.parse(file, encoding)
